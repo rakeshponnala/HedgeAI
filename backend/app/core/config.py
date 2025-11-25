@@ -12,8 +12,8 @@ class Settings:
 
     # AI Model Configuration
     AI_MODEL_NAME: str = os.getenv("AI_MODEL_NAME", "claude-sonnet-4-5-20250929")
-    AI_MAX_TOKENS: int = int(os.getenv("AI_MAX_TOKENS", "400"))
-    AI_TEMPERATURE: float = float(os.getenv("AI_TEMPERATURE", "0.2"))
+    AI_MAX_TOKENS: int = int(os.getenv("AI_MAX_TOKENS", "1500"))
+    AI_TEMPERATURE: float = float(os.getenv("AI_TEMPERATURE", "0.3"))
 
     # API Configuration
     API_TITLE: str = "HedgeAI API"
@@ -24,7 +24,7 @@ class Settings:
     CORS_ORIGINS: list = ["*"]  # Restrict in production
 
     # News Configuration
-    NEWS_MAX_RESULTS: int = int(os.getenv("NEWS_MAX_RESULTS", "3"))
+    NEWS_MAX_RESULTS: int = int(os.getenv("NEWS_MAX_RESULTS", "5"))
 
 
 settings = Settings()

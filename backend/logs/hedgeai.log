@@ -1,0 +1,172 @@
+2025-11-25 15:37:04 | INFO     | root | ============================================================
+2025-11-25 15:37:04 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:37:04
+2025-11-25 15:37:04 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:37:04 | INFO     | root | ============================================================
+2025-11-25 15:37:05 | INFO     | root | ============================================================
+2025-11-25 15:37:05 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:37:05
+2025-11-25 15:37:05 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:37:05 | INFO     | root | ============================================================
+2025-11-25 15:38:07 | INFO     | root | ============================================================
+2025-11-25 15:38:07 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:38:07
+2025-11-25 15:38:07 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:38:07 | INFO     | root | ============================================================
+2025-11-25 15:38:24 | INFO     | root | ============================================================
+2025-11-25 15:38:24 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:38:24
+2025-11-25 15:38:24 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:38:24 | INFO     | root | ============================================================
+2025-11-25 15:38:33 | INFO     | root | ============================================================
+2025-11-25 15:38:33 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:38:33
+2025-11-25 15:38:33 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:38:33 | INFO     | root | ============================================================
+2025-11-25 15:38:40 | INFO     | root | ============================================================
+2025-11-25 15:38:40 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:38:40
+2025-11-25 15:38:40 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:38:40 | INFO     | root | ============================================================
+2025-11-25 15:38:51 | INFO     | root | ============================================================
+2025-11-25 15:38:51 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:38:51
+2025-11-25 15:38:51 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:38:51 | INFO     | root | ============================================================
+2025-11-25 15:38:58 | INFO     | root | ============================================================
+2025-11-25 15:38:58 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:38:58
+2025-11-25 15:38:58 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:38:58 | INFO     | root | ============================================================
+2025-11-25 15:39:24 | INFO     | root | ============================================================
+2025-11-25 15:39:24 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:39:24
+2025-11-25 15:39:24 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:39:24 | INFO     | root | ============================================================
+2025-11-25 15:40:10 | INFO     | app.services.ticker_service | [TickerService] Resolving input: 'google' (cleaned: 'google')
+2025-11-25 15:40:10 | INFO     | app.services.ticker_service | [TickerService] MATCH FOUND: 'google' -> GOOGL
+2025-11-25 15:40:10 | INFO     | app.api.routes | [API] ========== NEW ANALYSIS REQUEST ==========
+2025-11-25 15:40:10 | INFO     | app.api.routes | [API] Original query: 'google'
+2025-11-25 15:40:10 | INFO     | app.api.routes | [API] Resolved ticker: 'GOOGL'
+2025-11-25 15:40:10 | INFO     | app.services.data_service | [DataService] Fetching stock data for ticker: GOOGL
+2025-11-25 15:40:10 | INFO     | app.services.data_service | [DataService] Yahoo Finance info keys: ['address1', 'city', 'state', 'zip', 'country', 'phone', 'website', 'industry', 'industryKey', 'industryDisp']...
+2025-11-25 15:40:10 | INFO     | app.services.data_service | [DataService] Company name from info: Alphabet Inc.
+2025-11-25 15:40:10 | INFO     | app.services.data_service | [DataService] Current price: 323.44
+2025-11-25 15:40:11 | INFO     | primp | response: https://duckduckgo.com/?q=GOOGL+stock+news+risks+concerns+2025 200
+2025-11-25 15:40:11 | INFO     | primp | response: https://www.bing.com/news/infinitescrollajax?q=GOOGL+stock+news+risks+concerns+2025&InfiniteScroll=1&first=11&SFX=1&cc=us&setlang=en 200
+2025-11-25 15:40:11 | INFO     | primp | response: https://duckduckgo.com/news.js?l=us-en&o=json&noamp=1&q=GOOGL+stock+news+risks+concerns+2025&vqd=4-244491845663232155281675718387567617972&p=-1 200
+2025-11-25 15:40:11 | INFO     | app.services.analysis_service | [AnalysisService] Sending request to claude-sonnet-4-5-20250929...
+2025-11-25 15:40:27 | INFO     | httpx | HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-11-25 15:40:27 | INFO     | app.api.routes | [API] Analysis completed successfully for GOOGL
+2025-11-25 15:40:27 | INFO     | app.api.routes | [API] Price returned: 323.44
+2025-11-25 15:43:21 | INFO     | root | ============================================================
+2025-11-25 15:43:21 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:43:21
+2025-11-25 15:43:21 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:43:21 | INFO     | root | ============================================================
+2025-11-25 15:43:31 | INFO     | root | ============================================================
+2025-11-25 15:43:31 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:43:31
+2025-11-25 15:43:31 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:43:31 | INFO     | root | ============================================================
+2025-11-25 15:43:41 | INFO     | root | ============================================================
+2025-11-25 15:43:41 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:43:41
+2025-11-25 15:43:41 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:43:41 | INFO     | root | ============================================================
+2025-11-25 15:43:54 | INFO     | root | ============================================================
+2025-11-25 15:43:54 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:43:54
+2025-11-25 15:43:54 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:43:54 | INFO     | root | ============================================================
+2025-11-25 15:44:08 | INFO     | root | ============================================================
+2025-11-25 15:44:08 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:44:08
+2025-11-25 15:44:08 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:44:08 | INFO     | root | ============================================================
+2025-11-25 15:44:22 | INFO     | root | ============================================================
+2025-11-25 15:44:22 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:44:22
+2025-11-25 15:44:22 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:44:22 | INFO     | root | ============================================================
+2025-11-25 15:44:42 | INFO     | root | ============================================================
+2025-11-25 15:44:42 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:44:42
+2025-11-25 15:44:42 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:44:42 | INFO     | root | ============================================================
+2025-11-25 15:44:57 | INFO     | root | ============================================================
+2025-11-25 15:44:57 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:44:57
+2025-11-25 15:44:57 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:44:57 | INFO     | root | ============================================================
+2025-11-25 15:46:54 | INFO     | app.services.ticker_service | [TickerService] Resolving input: 'google' (cleaned: 'google')
+2025-11-25 15:46:54 | INFO     | app.services.ticker_service | [TickerService] MATCH FOUND: 'google' -> GOOGL
+2025-11-25 15:46:54 | INFO     | app.api.routes | [API] ========== NEW ANALYSIS REQUEST ==========
+2025-11-25 15:46:54 | INFO     | app.api.routes | [API] Original query: 'google'
+2025-11-25 15:46:54 | INFO     | app.api.routes | [API] Resolved ticker: 'GOOGL'
+2025-11-25 15:46:54 | INFO     | app.services.data_service | [DataService] Fetching stock data for ticker: GOOGL
+2025-11-25 15:46:54 | INFO     | app.services.data_service | [DataService] Yahoo Finance info keys: ['address1', 'city', 'state', 'zip', 'country', 'phone', 'website', 'industry', 'industryKey', 'industryDisp']...
+2025-11-25 15:46:54 | INFO     | app.services.data_service | [DataService] Company name from info: Alphabet Inc.
+2025-11-25 15:46:55 | INFO     | app.services.data_service | [DataService] Current price: 323.44
+2025-11-25 15:46:55 | INFO     | primp | response: https://news.search.yahoo.com/search?p=GOOGL+stock+news+risks+concerns+2025 200
+2025-11-25 15:46:55 | INFO     | primp | response: https://www.bing.com/news/infinitescrollajax?q=GOOGL+stock+news+risks+concerns+2025&InfiniteScroll=1&first=11&SFX=1&cc=us&setlang=en 200
+2025-11-25 15:46:55 | INFO     | app.services.analysis_service | [AnalysisService] Sending request to claude-sonnet-4-5-20250929...
+2025-11-25 15:47:18 | INFO     | httpx | HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-11-25 15:47:18 | INFO     | app.api.routes | [API] Analysis completed successfully for GOOGL
+2025-11-25 15:47:18 | INFO     | app.api.routes | [API] Price returned: 323.44
+2025-11-25 15:49:52 | INFO     | app.services.ticker_service | [TickerService] Resolving input: 'nvidia' (cleaned: 'nvidia')
+2025-11-25 15:49:52 | INFO     | app.services.ticker_service | [TickerService] MATCH FOUND: 'nvidia' -> NVDA
+2025-11-25 15:49:52 | INFO     | app.api.routes | [API] ========== NEW ANALYSIS REQUEST ==========
+2025-11-25 15:49:52 | INFO     | app.api.routes | [API] Original query: 'nvidia'
+2025-11-25 15:49:52 | INFO     | app.api.routes | [API] Resolved ticker: 'NVDA'
+2025-11-25 15:49:52 | INFO     | app.services.data_service | [DataService] Fetching stock data for ticker: NVDA
+2025-11-25 15:49:52 | INFO     | app.services.data_service | [DataService] Yahoo Finance info keys: ['address1', 'city', 'state', 'zip', 'country', 'phone', 'website', 'industry', 'industryKey', 'industryDisp']...
+2025-11-25 15:49:52 | INFO     | app.services.data_service | [DataService] Company name from info: NVIDIA Corporation
+2025-11-25 15:49:52 | INFO     | app.services.data_service | [DataService] Current price: 177.82
+2025-11-25 15:49:52 | INFO     | primp | response: https://duckduckgo.com/?q=NVDA+stock+news+risks+concerns+2025 200
+2025-11-25 15:49:52 | INFO     | primp | response: https://www.bing.com/news/infinitescrollajax?q=NVDA+stock+news+risks+concerns+2025&InfiniteScroll=1&first=11&SFX=1&cc=us&setlang=en 200
+2025-11-25 15:49:53 | INFO     | primp | response: https://duckduckgo.com/news.js?l=us-en&o=json&noamp=1&q=NVDA+stock+news+risks+concerns+2025&vqd=4-254366413795483591628878250624705319052&p=-1 200
+2025-11-25 15:49:53 | INFO     | app.services.analysis_service | [AnalysisService] Sending request to claude-sonnet-4-5-20250929...
+2025-11-25 15:50:09 | INFO     | httpx | HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-11-25 15:50:09 | INFO     | app.api.routes | [API] Analysis completed successfully for NVDA
+2025-11-25 15:50:09 | INFO     | app.api.routes | [API] Price returned: 177.82
+2025-11-25 15:51:09 | INFO     | app.services.ticker_service | [TickerService] Resolving input: 'NVDA' (cleaned: 'nvda')
+2025-11-25 15:51:09 | WARNING  | app.services.ticker_service | [TickerService] NO MATCH in dictionary - passing through as ticker: 'NVDA'
+2025-11-25 15:51:09 | WARNING  | app.services.ticker_service | [TickerService] If this fails, consider adding 'nvda' to COMPANY_TO_TICKER
+2025-11-25 15:51:09 | INFO     | app.api.routes | [API] ========== NEW ANALYSIS REQUEST ==========
+2025-11-25 15:51:09 | INFO     | app.api.routes | [API] Original query: 'NVDA'
+2025-11-25 15:51:09 | INFO     | app.api.routes | [API] Resolved ticker: 'NVDA'
+2025-11-25 15:51:09 | INFO     | app.services.data_service | [DataService] Fetching stock data for ticker: NVDA
+2025-11-25 15:51:09 | INFO     | app.services.data_service | [DataService] Yahoo Finance info keys: ['address1', 'city', 'state', 'zip', 'country', 'phone', 'website', 'industry', 'industryKey', 'industryDisp']...
+2025-11-25 15:51:09 | INFO     | app.services.data_service | [DataService] Company name from info: NVIDIA Corporation
+2025-11-25 15:51:09 | INFO     | app.services.data_service | [DataService] Current price: 177.82
+2025-11-25 15:51:09 | INFO     | primp | response: https://duckduckgo.com/?q=NVDA+stock+news+risks+concerns+2025 200
+2025-11-25 15:51:09 | INFO     | primp | response: https://www.bing.com/news/infinitescrollajax?q=NVDA+stock+news+risks+concerns+2025&InfiniteScroll=1&first=11&SFX=1&cc=us&setlang=en 200
+2025-11-25 15:51:10 | INFO     | primp | response: https://duckduckgo.com/news.js?l=us-en&o=json&noamp=1&q=NVDA+stock+news+risks+concerns+2025&vqd=4-254366413795483591628878250624705319052&p=-1 200
+2025-11-25 15:51:10 | INFO     | app.services.analysis_service | [AnalysisService] Sending request to claude-sonnet-4-5-20250929...
+2025-11-25 15:51:29 | INFO     | httpx | HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-11-25 15:51:29 | INFO     | app.api.routes | [API] Analysis completed successfully for NVDA
+2025-11-25 15:51:29 | INFO     | app.api.routes | [API] Price returned: 177.82
+2025-11-25 15:51:48 | INFO     | root | ============================================================
+2025-11-25 15:51:48 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:51:48
+2025-11-25 15:51:48 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:51:48 | INFO     | root | ============================================================
+2025-11-25 15:55:04 | INFO     | root | ============================================================
+2025-11-25 15:55:04 | INFO     | root | HedgeAI Backend Starting - 2025-11-25 15:55:04
+2025-11-25 15:55:04 | INFO     | root | Log file: /Users/rakeshponnala/Dev/HedgeAI/backend/logs/hedgeai.log
+2025-11-25 15:55:04 | INFO     | root | ============================================================
+2025-11-25 15:55:51 | INFO     | app.services.ticker_service | [TickerService] Resolving input: 'Google' (cleaned: 'google')
+2025-11-25 15:55:51 | INFO     | app.services.ticker_service | [TickerService] MATCH FOUND: 'Google' -> GOOGL
+2025-11-25 15:55:51 | INFO     | app.api.routes | [API] ========== NEW ANALYSIS REQUEST ==========
+2025-11-25 15:55:51 | INFO     | app.api.routes | [API] Original query: 'Google'
+2025-11-25 15:55:51 | INFO     | app.api.routes | [API] Resolved ticker: 'GOOGL'
+2025-11-25 15:55:51 | INFO     | app.services.data_service | [DataService] Fetching stock data for ticker: GOOGL
+2025-11-25 15:55:52 | INFO     | app.services.data_service | [DataService] Yahoo Finance info keys: ['address1', 'city', 'state', 'zip', 'country', 'phone', 'website', 'industry', 'industryKey', 'industryDisp']...
+2025-11-25 15:55:52 | INFO     | app.services.data_service | [DataService] Company name from info: Alphabet Inc.
+2025-11-25 15:55:52 | INFO     | app.services.data_service | [DataService] Current price: 323.44
+2025-11-25 15:55:52 | INFO     | primp | response: https://news.search.yahoo.com/search?p=GOOGL+stock+news+risks+concerns+2025 200
+2025-11-25 15:55:52 | INFO     | primp | response: https://www.bing.com/news/infinitescrollajax?q=GOOGL+stock+news+risks+concerns+2025&InfiniteScroll=1&first=11&SFX=1&cc=us&setlang=en 200
+2025-11-25 15:55:52 | INFO     | app.services.analysis_service | [AnalysisService] Sending request to claude-sonnet-4-5-20250929...
+2025-11-25 15:56:12 | INFO     | httpx | HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-11-25 15:56:12 | INFO     | app.api.routes | [API] Analysis completed successfully for GOOGL
+2025-11-25 15:56:12 | INFO     | app.api.routes | [API] Price returned: 323.44
+2025-11-25 15:56:46 | INFO     | app.services.ticker_service | [TickerService] Resolving input: 'nvda' (cleaned: 'nvda')
+2025-11-25 15:56:46 | WARNING  | app.services.ticker_service | [TickerService] NO MATCH in dictionary - passing through as ticker: 'NVDA'
+2025-11-25 15:56:46 | WARNING  | app.services.ticker_service | [TickerService] If this fails, consider adding 'nvda' to COMPANY_TO_TICKER
+2025-11-25 15:56:46 | INFO     | app.api.routes | [API] ========== NEW ANALYSIS REQUEST ==========
+2025-11-25 15:56:46 | INFO     | app.api.routes | [API] Original query: 'nvda'
+2025-11-25 15:56:46 | INFO     | app.api.routes | [API] Resolved ticker: 'NVDA'
+2025-11-25 15:56:46 | INFO     | app.services.data_service | [DataService] Fetching stock data for ticker: NVDA
+2025-11-25 15:56:46 | INFO     | app.services.data_service | [DataService] Yahoo Finance info keys: ['address1', 'city', 'state', 'zip', 'country', 'phone', 'website', 'industry', 'industryKey', 'industryDisp']...
+2025-11-25 15:56:46 | INFO     | app.services.data_service | [DataService] Company name from info: NVIDIA Corporation
+2025-11-25 15:56:47 | INFO     | app.services.data_service | [DataService] Current price: 177.82
+2025-11-25 15:56:47 | INFO     | primp | response: https://duckduckgo.com/?q=NVDA+stock+news+risks+concerns+2025 200
+2025-11-25 15:56:47 | INFO     | primp | response: https://news.search.yahoo.com/search?p=NVDA+stock+news+risks+concerns+2025 200
+2025-11-25 15:56:47 | INFO     | primp | response: https://duckduckgo.com/news.js?l=us-en&o=json&noamp=1&q=NVDA+stock+news+risks+concerns+2025&vqd=4-254366413795483591628878250624705319052&p=-1 200
+2025-11-25 15:56:47 | INFO     | app.services.analysis_service | [AnalysisService] Sending request to claude-sonnet-4-5-20250929...
+2025-11-25 15:57:08 | INFO     | httpx | HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-11-25 15:57:08 | INFO     | app.api.routes | [API] Analysis completed successfully for NVDA
+2025-11-25 15:57:08 | INFO     | app.api.routes | [API] Price returned: 177.82
