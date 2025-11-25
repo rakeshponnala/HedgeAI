@@ -1,110 +1,91 @@
-# The AI Analyst
+# HedgeAI
 
-A specialized AI-powered tool for retail investors that provides **"Devil's Advocate"** risk analysis on stocks. Instead of cheerleading, it identifies downside risks and provides bearish/neutral ratings to help protect capital.
+AI-powered contrarian stock risk analysis for retail investors. Unlike traditional bullish-biased tools, HedgeAI takes a **hedge fund approach** - identifying downside risks to help protect your capital.
 
-## Why This Exists
+## Overview
 
-Most financial tools and analysts are bullish by default. The AI Analyst takes the opposite approach - it acts as a **cynical hedge fund analyst** focused on identifying risks that could hurt your investment. This helps retail investors make more informed decisions by understanding the bear case.
+Most financial analysis tools default to optimism. HedgeAI fills a critical gap by providing **"Devil's Advocate"** analysis that surfaces potential risks before you invest.
+
+**Key Value Proposition:**
+- Identifies risks others might overlook
+- Provides clear, actionable risk assessments
+- Helps investors make more informed decisions
 
 ## Features
 
-- **Real-time Stock Data** - Fetches live prices via Yahoo Finance
-- **News Aggregation** - Pulls recent headlines via DuckDuckGo search
-- **AI Risk Assessment** - Claude Sonnet 4.5 analyzes data and identifies key risks
-- **Bearish/Neutral Ratings** - Clear verdict on risk level
-- **Clean Dashboard UI** - Modern React frontend with Tailwind CSS
+| Feature | Description |
+|---------|-------------|
+| **Real-time Data** | Live stock prices via Yahoo Finance |
+| **News Intelligence** | Recent headlines aggregated from DuckDuckGo |
+| **AI Risk Analysis** | Claude Sonnet 4.5 powered risk assessment |
+| **Clear Verdicts** | Bearish or Neutral ratings |
+| **Modern UI** | Clean, responsive dashboard |
 
-## How It Works
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         USER INPUT                                   │
-│                     Enter ticker: "NVDA"                            │
-└─────────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     FRONTEND (Next.js)                              │
-│                                                                      │
-│  • React dashboard with search input                                │
-│  • Sends GET request to /api/analyze/{ticker}                       │
-│  • Displays formatted risk memo                                      │
-└─────────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     BACKEND (FastAPI)                               │
-│                                                                      │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                   DATA RETRIEVAL LAYER                       │   │
-│  │                                                               │   │
-│  │   Yahoo Finance (yfinance)     DuckDuckGo (ddgs)            │   │
-│  │   ─────────────────────────    ─────────────────            │   │
-│  │   • Current stock price        • Recent news headlines       │   │
-│  │   • Fast, no API key needed    • Risk-focused search query   │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                │                                     │
-│                                ▼                                     │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                   AI ANALYSIS LAYER                          │   │
-│  │                                                               │   │
-│  │   Claude Sonnet 4.5 (Anthropic API)                         │   │
-│  │   ─────────────────────────────────                         │   │
-│  │   System Prompt: "Cynical hedge fund analyst"                │   │
-│  │   • Analyzes price + news                                    │   │
-│  │   • Identifies 2 major risks                                 │   │
-│  │   • Returns Bearish/Neutral rating                           │   │
-│  │   • Low temperature (0.2) for consistency                    │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                         OUTPUT                                       │
-│                                                                      │
-│   RISK ASSESSMENT MEMO - NVDA                                       │
-│   ─────────────────────────────                                     │
-│   Price: $177.82                                                    │
-│                                                                      │
-│   Major Risks:                                                       │
-│   1. Taiwan/TSMC geopolitical exposure...                           │
-│   2. Valuation concerns from analysts...                            │
-│                                                                      │
-│   Rating: BEARISH                                                    │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                      PRESENTATION LAYER                      │
+│                                                              │
+│    Next.js 16  •  React 19  •  Tailwind CSS 4              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ REST API
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      APPLICATION LAYER                       │
+│                                                              │
+│    FastAPI  •  Pydantic  •  Uvicorn                        │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+           ┌───────────────┼───────────────┐
+           ▼               ▼               ▼
+    ┌────────────┐  ┌────────────┐  ┌────────────┐
+    │  Yahoo     │  │ DuckDuckGo │  │ Anthropic  │
+    │  Finance   │  │   Search   │  │  Claude    │
+    └────────────┘  └────────────┘  └────────────┘
 ```
 
 ## Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Frontend** | Next.js 16 + React 19 | Dashboard UI |
-| **Styling** | Tailwind CSS 4 | Modern, responsive design |
-| **Backend** | FastAPI (Python) | REST API server |
-| **AI Model** | Claude Sonnet 4.5 | Risk analysis generation |
-| **Stock Data** | yfinance | Real-time price data |
-| **News Data** | DuckDuckGo Search | Recent headlines |
+| Component | Technology | Version |
+|-----------|------------|---------|
+| Frontend | Next.js | 16.x |
+| UI Framework | React | 19.x |
+| Styling | Tailwind CSS | 4.x |
+| Backend | FastAPI | Latest |
+| AI Model | Claude Sonnet | 4.5 |
+| Stock Data | yfinance | Latest |
+| News Data | ddgs | Latest |
 
 ## Project Structure
 
 ```
-AI_Analyst/
+HedgeAI/
+│
 ├── backend/
-│   ├── main.py              # FastAPI server & endpoints
-│   ├── claude_brain.py      # AI analysis logic
-│   ├── requirements.txt     # Python dependencies
-│   └── .env                 # API keys (not committed)
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── routes.py             # API endpoint definitions
+│   │   ├── core/
+│   │   │   └── config.py             # Application configuration
+│   │   ├── models/
+│   │   │   └── schemas.py            # Pydantic data models
+│   │   └── services/
+│   │       ├── analysis_service.py   # AI analysis logic
+│   │       └── data_service.py       # Data retrieval logic
+│   ├── main.py                       # Application entry point
+│   ├── requirements.txt              # Python dependencies
+│   └── .env                          # Environment variables (not committed)
 │
 ├── frontend/
 │   ├── src/app/
-│   │   ├── page.js          # Main dashboard component
-│   │   ├── layout.tsx       # App layout & metadata
-│   │   └── globals.css      # Tailwind styles
-│   ├── package.json         # Node dependencies
-│   └── ...
+│   │   ├── page.js                   # Main dashboard
+│   │   ├── layout.tsx                # Root layout
+│   │   └── globals.css               # Global styles
+│   └── package.json                  # Node dependencies
 │
 ├── docs/
-│   └── ARCHITECTURE.md      # Technical documentation
+│   └── ARCHITECTURE.md               # Technical documentation
 │
 ├── .gitignore
 └── README.md
@@ -116,99 +97,138 @@ AI_Analyst/
 
 - Python 3.9+
 - Node.js 18+
-- Anthropic API key ([Get one here](https://console.anthropic.com/))
+- Anthropic API key → [Get one here](https://console.anthropic.com/)
 
 ### Backend Setup
 
 ```bash
+# Navigate to backend
 cd backend
+
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env  # Then edit with your API key
 ```
 
-Create `backend/.env`:
+**Environment Variables** (`backend/.env`):
 ```env
 ANTHROPIC_API_KEY=your_api_key_here
 AI_MODEL_NAME=claude-sonnet-4-5-20250929
+AI_MAX_TOKENS=400
+AI_TEMPERATURE=0.2
+NEWS_MAX_RESULTS=3
 ```
 
-Start the server:
+**Start the server:**
 ```bash
 uvicorn main:app --reload
 ```
 
-Server runs at `http://127.0.0.1:8000`
+API available at `http://127.0.0.1:8000`
 
 ### Frontend Setup
 
 ```bash
+# Navigate to frontend
 cd frontend
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-Frontend runs at `http://localhost:3000`
+Dashboard available at `http://localhost:3000`
 
-## API Reference
+## API Documentation
 
-### Health Check
-```
+### Interactive Docs
+
+Once the backend is running:
+- **Swagger UI**: http://127.0.0.1:8000/docs
+- **ReDoc**: http://127.0.0.1:8000/redoc
+
+### Endpoints
+
+#### Health Check
+```http
 GET /
 ```
-Response:
-```json
-{"status": "active", "message": "The AI Analyst Brain is Online"}
-```
-
-### Analyze Stock
-```
-GET /api/analyze/{ticker}
-```
-Parameters:
-- `ticker` (string): Stock symbol (e.g., NVDA, TSLA, AAPL)
-
-Response:
 ```json
 {
-  "ticker": "NVDA",
-  "analysis": "RISK ASSESSMENT MEMO - NVDA\n\nPrice: $177.82\n\nMajor Risks:\n1. Taiwan/TSMC geopolitical exposure...\n2. Valuation concerns...\n\nRating: BEARISH"
+  "status": "active",
+  "message": "HedgeAI API is online",
+  "version": "1.0.0"
 }
 ```
 
-## Example Usage
+#### Analyze Stock
+```http
+GET /api/analyze/{ticker}
+```
 
-1. Start both backend and frontend servers
-2. Open `http://localhost:3000` in your browser
-3. Enter a stock ticker (e.g., `NVDA`, `TSLA`, `AAPL`)
-4. Click "Run Analysis" or press Enter
-5. Review the AI-generated risk assessment
+**Parameters:**
+| Name | Type | Description |
+|------|------|-------------|
+| `ticker` | string | Stock symbol (e.g., NVDA, TSLA) |
+
+**Response:**
+```json
+{
+  "ticker": "NVDA",
+  "analysis": "RISK ASSESSMENT MEMO - NVDA\n\nPrice: $177.82\n\nMajor Risks:\n1. Geopolitical exposure through Taiwan semiconductor dependency...\n2. Valuation concerns amid market volatility...\n\nRating: BEARISH"
+}
+```
 
 ## Configuration
 
-| Environment Variable | Description | Default |
-|---------------------|-------------|---------|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key | Required |
-| `AI_MODEL_NAME` | Claude model to use | `claude-sonnet-4-5-20250929` |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ANTHROPIC_API_KEY` | Anthropic API key | Required |
+| `AI_MODEL_NAME` | Claude model ID | `claude-sonnet-4-5-20250929` |
+| `AI_MAX_TOKENS` | Max response tokens | `400` |
+| `AI_TEMPERATURE` | Response randomness | `0.2` |
+| `NEWS_MAX_RESULTS` | Headlines to fetch | `3` |
 
 ## Documentation
 
-- [Architecture Documentation](docs/ARCHITECTURE.md) - Detailed technical documentation
+- [Architecture Guide](docs/ARCHITECTURE.md) - Technical deep-dive
+
+## Roadmap
+
+- [ ] User authentication
+- [ ] Analysis history
+- [ ] Portfolio tracking
+- [ ] Additional data sources (SEC filings, earnings)
+- [ ] Technical indicators
 
 ## Limitations
 
-- News data depends on DuckDuckGo search availability
-- Stock prices may have slight delays (not real-time trading data)
-- AI analysis is for research purposes only
+- Stock prices may have slight delays
+- News availability depends on DuckDuckGo
+- Analysis is AI-generated and for research only
 
 ## Disclaimer
 
-**This tool is for educational and research purposes only. It is NOT financial advice.** Always do your own research and consult with qualified financial advisors before making investment decisions.
+**This tool is for educational and research purposes only.**
+
+HedgeAI does not provide financial advice. Always conduct your own research and consult qualified financial advisors before making investment decisions. Past performance does not guarantee future results.
 
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Contributions welcome! Please open an issue or submit a PR.
+Contributions are welcome! Please read our contributing guidelines and submit a PR.
+
+---
+
+Built by Rakesh Ponnala

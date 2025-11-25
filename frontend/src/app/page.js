@@ -38,8 +38,8 @@ export default function Dashboard() {
             <Activity className="text-white w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">The AI Analyst</h1>
-            <p className="text-slate-500 text-sm">Institutional Grade Risk Assessment</p>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">HedgeAI</h1>
+            <p className="text-slate-500 text-sm">Contrarian Risk Analysis</p>
           </div>
         </div>
       </header>

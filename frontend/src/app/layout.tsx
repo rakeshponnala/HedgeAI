@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The AI Analyst",
-  description: "Institutional Grade Risk Assessment for Retail Investors",
+  title: "HedgeAI",
+  description: "AI-powered contrarian stock risk analysis",
 };
 
 export default function RootLayout({

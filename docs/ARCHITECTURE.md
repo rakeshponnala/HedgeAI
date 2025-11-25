@@ -1,189 +1,261 @@
-# Architecture Documentation
+# HedgeAI Architecture Guide
 
-This document provides detailed technical information about The AI Analyst's architecture, design decisions, and implementation details.
+Technical documentation for HedgeAI's system architecture, design patterns, and implementation details.
+
+## Table of Contents
+
+1. [System Overview](#system-overview)
+2. [Backend Architecture](#backend-architecture)
+3. [Frontend Architecture](#frontend-architecture)
+4. [Data Flow](#data-flow)
+5. [AI Integration](#ai-integration)
+6. [Security](#security)
+7. [Performance](#performance)
+
+---
 
 ## System Overview
 
-The AI Analyst follows a **three-tier architecture**:
+HedgeAI implements a **three-tier architecture** separating presentation, application logic, and external services.
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                      PRESENTATION TIER                            │
-│                        (Frontend)                                 │
-│                                                                   │
-│   Next.js 16 + React 19 + Tailwind CSS                          │
-│   - Server-side rendering                                        │
-│   - Client-side interactivity                                    │
-│   - Responsive design                                            │
-└──────────────────────────────────────────────────────────────────┘
-                              │
-                              │ HTTP/REST
-                              ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                      APPLICATION TIER                             │
-│                        (Backend)                                  │
-│                                                                   │
-│   FastAPI + Uvicorn                                              │
-│   - RESTful API endpoints                                        │
-│   - Request validation (Pydantic)                                │
-│   - CORS middleware                                              │
-│   - Error handling                                               │
-└──────────────────────────────────────────────────────────────────┘
-                              │
-                              │
-              ┌───────────────┼───────────────┐
-              │               │               │
-              ▼               ▼               ▼
-┌──────────────────┐ ┌──────────────┐ ┌──────────────────┐
-│   Yahoo Finance  │ │  DuckDuckGo  │ │   Anthropic API  │
-│    (yfinance)    │ │    (ddgs)    │ │  (Claude 4.5)    │
-│                  │ │              │ │                  │
-│  • Stock prices  │ │  • News      │ │  • AI analysis   │
-│  • Market data   │ │  • Headlines │ │  • Risk rating   │
-└──────────────────┘ └──────────────┘ └──────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                         PRESENTATION TIER                            │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │                     Next.js Application                      │   │
+│   │                                                              │   │
+│   │   • Server Components (layout, metadata)                    │   │
+│   │   • Client Components (dashboard, forms)                    │   │
+│   │   • Tailwind CSS styling                                    │   │
+│   └─────────────────────────────────────────────────────────────┘   │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │
+                                │ HTTP/REST (JSON)
+                                │
+┌───────────────────────────────▼─────────────────────────────────────┐
+│                         APPLICATION TIER                             │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │                      FastAPI Server                          │   │
+│   │                                                              │   │
+│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │   │
+│   │   │   Routes    │  │   Services  │  │   Models    │        │   │
+│   │   │  (api/)     │  │ (services/) │  │  (models/)  │        │   │
+│   │   └─────────────┘  └─────────────┘  └─────────────┘        │   │
+│   │                                                              │   │
+│   │   ┌─────────────────────────────────────────────────┐       │   │
+│   │   │              Configuration (core/)               │       │   │
+│   │   └─────────────────────────────────────────────────┘       │   │
+│   └─────────────────────────────────────────────────────────────┘   │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │
+              ┌─────────────────┼─────────────────┐
+              │                 │                 │
+┌─────────────▼───┐  ┌─────────▼───────┐  ┌─────▼─────────────┐
+│  Yahoo Finance  │  │   DuckDuckGo    │  │   Anthropic API   │
+│                 │  │                 │  │                   │
+│  Stock prices   │  │  News search    │  │  Claude Sonnet    │
+│  Market data    │  │  Headlines      │  │  Risk analysis    │
+└─────────────────┘  └─────────────────┘  └───────────────────┘
 ```
 
-## Component Details
+---
 
-### Frontend Architecture
+## Backend Architecture
 
-```
-frontend/
-├── src/app/
-│   ├── page.js         # Main dashboard (client component)
-│   ├── layout.tsx      # Root layout (server component)
-│   └── globals.css     # Global styles
-├── public/             # Static assets
-└── package.json        # Dependencies
-```
-
-#### Key Design Decisions
-
-1. **Client Component for Dashboard** (`"use client"`)
-   - Enables useState, useEffect hooks
-   - Handles user input and API calls
-   - Manages loading/error states
-
-2. **Server Component for Layout**
-   - Metadata for SEO
-   - Font optimization (Geist fonts)
-   - Shared layout structure
-
-3. **Tailwind CSS 4**
-   - Utility-first styling
-   - No custom CSS files needed
-   - Responsive by default
-
-#### State Management
-
-```javascript
-const [ticker, setTicker] = useState('');     // User input
-const [loading, setLoading] = useState(false); // API call status
-const [data, setData] = useState(null);        // API response
-const [error, setError] = useState('');        // Error messages
-```
-
-### Backend Architecture
+### Directory Structure
 
 ```
 backend/
-├── main.py             # FastAPI application
-├── claude_brain.py     # AI analysis logic
-├── requirements.txt    # Python dependencies
-└── .env               # Environment variables
+├── app/
+│   ├── __init__.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── routes.py              # Endpoint definitions
+│   ├── core/
+│   │   ├── __init__.py
+│   │   └── config.py              # Settings & environment
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── schemas.py             # Pydantic models
+│   └── services/
+│       ├── __init__.py
+│       ├── analysis_service.py    # AI analysis
+│       └── data_service.py        # Data retrieval
+├── main.py                        # Application entry
+├── requirements.txt
+└── .env
 ```
 
-#### main.py - API Layer
+### Component Responsibilities
+
+#### `main.py` - Application Entry Point
 
 ```python
-# Responsibilities:
-# 1. Initialize FastAPI app
-# 2. Configure CORS middleware
-# 3. Define API endpoints
-# 4. Handle HTTP requests/responses
-# 5. Error handling with HTTPException
+# Initializes FastAPI with configuration
+app = FastAPI(
+    title=settings.API_TITLE,
+    version=settings.API_VERSION,
+    description=settings.API_DESCRIPTION
+)
+
+# Configures middleware (CORS, etc.)
+# Includes route definitions
 ```
 
-**Endpoints:**
+#### `app/core/config.py` - Configuration Management
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | Health check |
-| GET | `/api/analyze/{ticker}` | Stock risk analysis |
-
-#### claude_brain.py - Business Logic
+Centralizes all application settings:
 
 ```python
-class ClaudeAnalyst:
-    def __init__(self):
-        # Load API key from environment
-        # Initialize Anthropic client
-        # Set model configuration
-
-    def fetch_data(self, ticker: str) -> dict:
-        # 1. Fetch stock price from Yahoo Finance
-        # 2. Fetch news from DuckDuckGo
-        # 3. Return structured data
-
-    def analyze(self, ticker: str) -> str:
-        # 1. Call fetch_data()
-        # 2. Construct prompt with real data
-        # 3. Send to Claude API
-        # 4. Return analysis text
+class Settings:
+    ANTHROPIC_API_KEY: str      # From environment
+    AI_MODEL_NAME: str          # Claude model ID
+    AI_MAX_TOKENS: int          # Response limit
+    AI_TEMPERATURE: float       # Response randomness
+    NEWS_MAX_RESULTS: int       # Headlines count
 ```
+
+#### `app/api/routes.py` - API Endpoints
+
+Defines HTTP endpoints with proper typing:
+
+| Endpoint | Method | Response Model | Description |
+|----------|--------|----------------|-------------|
+| `/` | GET | `HealthResponse` | Health check |
+| `/api/analyze/{ticker}` | GET | `AnalysisResponse` | Stock analysis |
+
+#### `app/models/schemas.py` - Data Models
+
+Pydantic models for request/response validation:
+
+```python
+class AnalysisResponse(BaseModel):
+    ticker: str
+    analysis: str
+
+class HealthResponse(BaseModel):
+    status: str
+    message: str
+    version: str
+```
+
+#### `app/services/data_service.py` - Data Retrieval
+
+Handles external data fetching:
+
+```python
+class DataService:
+    @staticmethod
+    def get_stock_price(ticker: str) -> Union[float, str]
+
+    @staticmethod
+    def get_news_headlines(ticker: str) -> List[str]
+
+    @classmethod
+    def fetch_stock_data(cls, ticker: str) -> dict
+```
+
+#### `app/services/analysis_service.py` - AI Analysis
+
+Manages Claude API integration:
+
+```python
+class AnalysisService:
+    SYSTEM_PROMPT = "..."         # AI persona definition
+    USER_PROMPT_TEMPLATE = "..."  # Analysis request template
+
+    def __init__(self)            # Initialize Anthropic client
+    def analyze(ticker: str)      # Perform risk analysis
+```
+
+---
+
+## Frontend Architecture
+
+### Directory Structure
+
+```
+frontend/
+├── src/
+│   └── app/
+│       ├── page.js            # Dashboard (Client Component)
+│       ├── layout.tsx         # Root layout (Server Component)
+│       └── globals.css        # Tailwind styles
+├── public/                    # Static assets
+└── package.json
+```
+
+### Component Pattern
+
+**Server Components** (default in Next.js 14+):
+- `layout.tsx` - Metadata, fonts, shared structure
+
+**Client Components** (`"use client"`):
+- `page.js` - Interactive dashboard with state
+
+### State Management
+
+```javascript
+// Local component state (no external library needed)
+const [ticker, setTicker] = useState('');      // User input
+const [loading, setLoading] = useState(false);  // Loading state
+const [data, setData] = useState(null);         // API response
+const [error, setError] = useState('');         // Error state
+```
+
+---
 
 ## Data Flow
 
-### Request Flow
+### Request Lifecycle
 
 ```
-1. User enters "NVDA" in frontend
-                │
-                ▼
-2. Frontend sends GET /api/analyze/NVDA
-                │
-                ▼
-3. FastAPI receives request
-                │
-                ▼
-4. ClaudeAnalyst.analyze("NVDA") called
-                │
-                ├──► fetch_data("NVDA")
-                │         │
-                │         ├──► yfinance: Get price ($177.82)
-                │         │
-                │         └──► ddgs: Get news headlines
-                │
-                ▼
-5. Construct prompt with real data
-                │
-                ▼
-6. Send to Claude API (Sonnet 4.5)
-                │
-                ▼
-7. Claude returns risk assessment
-                │
-                ▼
-8. FastAPI returns JSON response
-                │
-                ▼
-9. Frontend displays formatted memo
+1. USER ACTION
+   └─▶ User enters "NVDA" and clicks "Run Analysis"
+
+2. FRONTEND
+   └─▶ Validates input
+   └─▶ Sets loading state
+   └─▶ Sends GET /api/analyze/NVDA
+
+3. API LAYER (routes.py)
+   └─▶ Validates ticker format
+   └─▶ Calls AnalysisService.analyze()
+
+4. ANALYSIS SERVICE
+   └─▶ Calls DataService.fetch_stock_data()
+       ├─▶ Yahoo Finance: Gets price ($177.82)
+       └─▶ DuckDuckGo: Gets 3 news headlines
+
+5. AI PROCESSING
+   └─▶ Constructs prompt with real data
+   └─▶ Sends to Claude API
+   └─▶ Receives risk assessment
+
+6. RESPONSE
+   └─▶ Returns JSON to frontend
+   └─▶ Frontend displays formatted memo
 ```
+
+---
+
+## AI Integration
 
 ### Prompt Engineering
 
-The system uses a carefully crafted prompt structure:
+The system uses structured prompting for consistent output:
 
-```python
-# System Prompt (Persona)
-system_prompt = """
+**System Prompt (Persona Definition):**
+```
 You are a cynical, risk-focused hedge fund analyst.
 Your job is to protect capital by identifying DOWNSIDE risks.
 You do not cheerlead.
-"""
+```
 
-# User Prompt (Context + Task)
-user_message = f"""
+**User Prompt (Task + Context):**
+```
 Analyze the stock ticker: {ticker}
 
 HERE IS THE REAL-TIME DATA (Do not hallucinate numbers):
@@ -196,123 +268,107 @@ Write a 'Risk Assessment Memo' (max 150 words).
 1. Acknowledge the price action.
 2. Identify 2 major risks based on the news provided.
 3. Conclude with a 'Bearish' or 'Neutral' rating.
-"""
 ```
 
-**Key Prompt Design Choices:**
+### Design Rationale
 
-| Choice | Reason |
-|--------|--------|
-| "Cynical" persona | Prevents bullish bias |
+| Design Choice | Purpose |
+|---------------|---------|
+| "Cynical" persona | Prevents default bullish bias |
 | "Do not hallucinate" | Grounds response in provided data |
-| Max 150 words | Concise, actionable output |
-| Bearish/Neutral only | No bullish option reinforces risk focus |
-| Temperature 0.2 | More consistent, factual responses |
+| Max 150 words | Forces concise, actionable output |
+| Bearish/Neutral only | No bullish option maintains risk focus |
+| Temperature 0.2 | Ensures consistent, factual responses |
 
-## API Configuration
-
-### Claude API Settings
+### API Configuration
 
 ```python
-message = self.client.messages.create(
-    model="claude-sonnet-4-5-20250929",  # Latest Sonnet
-    max_tokens=400,                       # Response length limit
-    temperature=0.2,                      # Low = more deterministic
-    system=system_prompt,                 # Persona
+response = self.client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=400,
+    temperature=0.2,
+    system=SYSTEM_PROMPT,
     messages=[{"role": "user", "content": user_message}]
 )
+```
+
+---
+
+## Security
+
+### API Key Management
+
+```
+✓ Stored in .env file (not committed)
+✓ Listed in .gitignore
+✓ Loaded via python-dotenv
+✓ Validated on startup
+```
+
+### Input Validation
+
+```python
+# Ticker validation
+ticker = ticker.upper().strip()
+if not ticker or len(ticker) > 10:
+    raise HTTPException(status_code=400, detail="Invalid ticker")
 ```
 
 ### CORS Configuration
 
 ```python
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],        # TODO: Restrict in production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Current: Permissive (development)
+allow_origins=["*"]
+
+# Production: Restrict to specific origins
+allow_origins=["https://yourdomain.com"]
 ```
 
-## Error Handling
+---
 
-### Backend Errors
+## Performance
 
-```python
-# API key missing
-if not api_key:
-    raise ValueError("MISSING API KEY!")
+### Optimization Strategies
 
-# Analysis endpoint
-try:
-    report = analyst.analyze(ticker)
-    return {"ticker": ticker, "analysis": report}
-except Exception as e:
-    raise HTTPException(status_code=500, detail=str(e))
-```
+| Area | Strategy |
+|------|----------|
+| Stock Data | Uses `fast_info` for quicker retrieval |
+| News | Limited to 3 results to reduce latency |
+| AI Response | `max_tokens=400` limits response size |
+| Temperature | Low value (0.2) reduces retry needs |
 
-### Frontend Errors
+### Caching Opportunities
 
-```javascript
-try {
-    const response = await fetch(`http://127.0.0.1:8000/api/analyze/${ticker}`);
-    if (!response.ok) throw new Error("Failed to fetch data");
-    const result = await response.json();
-    setData(result);
-} catch (err) {
-    setError("Backend is offline or ticker invalid.");
-}
-```
+Future improvements:
+- Cache stock prices (1-5 min TTL)
+- Cache news results (15-30 min TTL)
+- Cache analysis results (configurable TTL)
 
-## Security Considerations
+### Async Considerations
 
-1. **API Key Protection**
-   - Stored in `.env` (not committed)
-   - Listed in `.gitignore`
-   - Loaded via `python-dotenv`
+Current implementation is synchronous. Future optimization:
+- Async data fetching
+- Parallel price + news retrieval
+- Background task processing
 
-2. **Input Validation**
-   - Ticker converted to uppercase
-   - Pydantic models for request validation
+---
 
-3. **CORS**
-   - Currently permissive (`*`)
-   - Should restrict to specific origins in production
+## Future Enhancements
 
-## Performance Considerations
-
-1. **Yahoo Finance**
-   - Uses `fast_info` for quicker price retrieval
-   - No API key = no rate limit concerns
-
-2. **DuckDuckGo**
-   - Limited to 3 results (`max_results=3`)
-   - Targeted search query for relevant news
-
-3. **Claude API**
-   - `max_tokens=400` limits response size
-   - Low temperature reduces retry needs
-
-## Future Improvements
-
-1. **Caching**
-   - Cache stock prices (1-5 min TTL)
-   - Cache news results (15-30 min TTL)
-
-2. **Async Operations**
-   - Make `fetch_data` async
-   - Parallel data fetching
-
-3. **Database**
-   - Store analysis history
-   - User accounts and watchlists
-
-4. **Authentication**
-   - JWT-based auth
+1. **Authentication**
+   - JWT-based user auth
    - Rate limiting per user
 
-5. **Additional Data Sources**
-   - SEC filings
+2. **Database**
+   - Analysis history storage
+   - User watchlists
+
+3. **Additional Data Sources**
+   - SEC filings integration
    - Earnings data
    - Technical indicators
+
+4. **Enhanced Analysis**
+   - Sentiment scoring
+   - Historical comparison
+   - Peer analysis
