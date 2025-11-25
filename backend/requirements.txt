@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+yfinance
+ddgs
+anthropic
+python-dotenv
+pydantic

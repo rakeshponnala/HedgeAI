@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+env/
+.env
+
+# Javascript
+node_modules/
+.next/
+dist/
+
+# OS
+.DS_Store
