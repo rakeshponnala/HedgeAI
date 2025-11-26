@@ -155,19 +155,33 @@ export default function Dashboard() {
           title: 'Near 52-Week High',
           text: `Only ${Math.abs(pctFromHigh).toFixed(1)}% below peak. Limited upside, elevated downside risk.`
         });
-      } else if (pctFromHigh < -40) {
+      } else if (pctFromHigh > -10) {
         sections.trading.push({
           type: 'neutral',
           icon: MinusCircle,
-          title: 'Significant Pullback',
-          text: `Down ${Math.abs(pctFromHigh).toFixed(1)}% from high. Could be value opportunity or falling knife.`
+          title: 'Close to 52-Week High',
+          text: `Trading ${Math.abs(pctFromHigh).toFixed(1)}% below 52-week high. Relatively strong price position.`
         });
-      } else if (pctFromHigh < -20) {
+      } else if (pctFromHigh > -20) {
+        sections.trading.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Moderate Pullback',
+          text: `${Math.abs(pctFromHigh).toFixed(1)}% below 52-week high. Normal trading range.`
+        });
+      } else if (pctFromHigh > -40) {
         sections.trading.push({
           type: 'good',
           icon: CheckCircle,
           title: 'Trading at Discount',
           text: `${Math.abs(pctFromHigh).toFixed(1)}% below 52-week high offers potential entry point.`
+        });
+      } else {
+        sections.trading.push({
+          type: 'warning',
+          icon: AlertTriangle,
+          title: 'Significant Pullback',
+          text: `Down ${Math.abs(pctFromHigh).toFixed(1)}% from high. Could be value opportunity or falling knife.`
         });
       }
     }
@@ -181,10 +195,31 @@ export default function Dashboard() {
           title: 'Unusual Volume',
           text: `${Math.round(volumeVsAvg)}% of average - ${(volumeVsAvg / 100).toFixed(1)}x normal. Significant activity detected.`
         });
-      } else if (volumeVsAvg < 50) {
+      } else if (volumeVsAvg > 120) {
         sections.trading.push({
           type: 'neutral',
           icon: MinusCircle,
+          title: 'Above Average Volume',
+          text: `${Math.round(volumeVsAvg)}% of average volume. Increased investor interest today.`
+        });
+      } else if (volumeVsAvg >= 80) {
+        sections.trading.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Normal Volume',
+          text: `${Math.round(volumeVsAvg)}% of average volume. Typical trading activity.`
+        });
+      } else if (volumeVsAvg >= 50) {
+        sections.trading.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Below Average Volume',
+          text: `${Math.round(volumeVsAvg)}% of average volume. Lighter trading today.`
+        });
+      } else {
+        sections.trading.push({
+          type: 'warning',
+          icon: AlertTriangle,
           title: 'Low Volume',
           text: `Only ${Math.round(volumeVsAvg)}% of average volume. Low liquidity today.`
         });
@@ -200,7 +235,21 @@ export default function Dashboard() {
           title: 'High Volatility',
           text: `Beta of ${beta.toFixed(2)} means ${Math.round((beta - 1) * 100)}% more volatile than market.`
         });
-      } else if (beta < 0.8) {
+      } else if (beta > 1.2) {
+        sections.trading.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Above Average Volatility',
+          text: `Beta of ${beta.toFixed(2)} - somewhat more volatile than the S&P 500.`
+        });
+      } else if (beta >= 0.8) {
+        sections.trading.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Market-Like Volatility',
+          text: `Beta of ${beta.toFixed(2)} - moves roughly in line with the market.`
+        });
+      } else {
         sections.trading.push({
           type: 'good',
           icon: CheckCircle,
@@ -215,7 +264,14 @@ export default function Dashboard() {
     const forwardPe = parseFloat(metrics.forward_pe);
 
     if (!isNaN(pe)) {
-      if (pe > 50) {
+      if (pe < 0) {
+        sections.valuation.push({
+          type: 'danger',
+          icon: XCircle,
+          title: 'Negative Earnings',
+          text: `Negative P/E indicates the company is currently unprofitable.`
+        });
+      } else if (pe > 50) {
         sections.valuation.push({
           type: 'danger',
           icon: XCircle,
@@ -229,19 +285,26 @@ export default function Dashboard() {
           title: 'High Valuation',
           text: `P/E of ${pe.toFixed(1)} above market average (~25). Growth expectations baked in.`
         });
-      } else if (pe > 0 && pe < 15) {
+      } else if (pe > 20) {
+        sections.valuation.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Fair Valuation',
+          text: `P/E of ${pe.toFixed(1)} is in line with market averages. Reasonably priced.`
+        });
+      } else if (pe > 15) {
+        sections.valuation.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Moderate Valuation',
+          text: `P/E of ${pe.toFixed(1)} below market average. Potentially undervalued.`
+        });
+      } else {
         sections.valuation.push({
           type: 'good',
           icon: CheckCircle,
           title: 'Attractive Valuation',
           text: `P/E of ${pe.toFixed(1)} suggests reasonable value relative to earnings.`
-        });
-      } else if (pe < 0) {
-        sections.valuation.push({
-          type: 'danger',
-          icon: XCircle,
-          title: 'Negative Earnings',
-          text: `Negative P/E indicates the company is currently unprofitable.`
         });
       }
     }
@@ -254,12 +317,19 @@ export default function Dashboard() {
           title: 'Earnings Decline Expected',
           text: `Forward P/E (${forwardPe.toFixed(1)}) > Trailing (${pe.toFixed(1)}) - analysts expect earnings drop.`
         });
-      } else if (forwardPe < pe * 0.75) {
+      } else if (forwardPe < pe * 0.85) {
         sections.valuation.push({
           type: 'good',
           icon: CheckCircle,
-          title: 'Strong Growth Expected',
-          text: `Forward P/E (${forwardPe.toFixed(1)}) << Trailing (${pe.toFixed(1)}) - significant earnings growth ahead.`
+          title: 'Earnings Growth Expected',
+          text: `Forward P/E (${forwardPe.toFixed(1)}) < Trailing (${pe.toFixed(1)}) - earnings growth ahead.`
+        });
+      } else {
+        sections.valuation.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Stable Earnings Outlook',
+          text: `Forward P/E (${forwardPe.toFixed(1)}) similar to Trailing (${pe.toFixed(1)}) - steady earnings expected.`
         });
       }
     }
@@ -284,12 +354,26 @@ export default function Dashboard() {
           title: 'High Leverage',
           text: `Debt/Equity of ${debtEquity.toFixed(0)} - company relies heavily on borrowed money.`
         });
-      } else if (debtEquity < 30 && debtEquity >= 0) {
+      } else if (debtEquity > 50) {
+        sections.debt.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Moderate Leverage',
+          text: `Debt/Equity of ${debtEquity.toFixed(0)} - balanced use of debt financing.`
+        });
+      } else if (debtEquity >= 30) {
         sections.debt.push({
           type: 'good',
           icon: CheckCircle,
-          title: 'Conservative Debt',
-          text: `Debt/Equity of ${debtEquity.toFixed(0)} shows strong balance sheet.`
+          title: 'Low Leverage',
+          text: `Debt/Equity of ${debtEquity.toFixed(0)} - conservative debt levels.`
+        });
+      } else if (debtEquity >= 0) {
+        sections.debt.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Minimal Debt',
+          text: `Debt/Equity of ${debtEquity.toFixed(0)} shows very strong balance sheet.`
         });
       }
     }
@@ -309,7 +393,21 @@ export default function Dashboard() {
           title: 'Tight Liquidity',
           text: `Current ratio of ${currentRatio.toFixed(2)} is borderline. Limited financial flexibility.`
         });
-      } else if (currentRatio > 2) {
+      } else if (currentRatio < 1.5) {
+        sections.debt.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Adequate Liquidity',
+          text: `Current ratio of ${currentRatio.toFixed(2)} - sufficient to meet obligations.`
+        });
+      } else if (currentRatio <= 2) {
+        sections.debt.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Good Liquidity',
+          text: `Current ratio of ${currentRatio.toFixed(2)} - healthy cash position.`
+        });
+      } else {
         sections.debt.push({
           type: 'good',
           icon: CheckCircle,
@@ -334,7 +432,14 @@ export default function Dashboard() {
           title: 'Elevated Short Interest',
           text: `${shortPct.toFixed(1)}% short interest - notable bearish sentiment.`
         });
-      } else if (shortPct < 3 && shortPct > 0) {
+      } else if (shortPct > 5) {
+        sections.debt.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Moderate Short Interest',
+          text: `${shortPct.toFixed(1)}% short interest - some bearish positioning.`
+        });
+      } else if (shortPct >= 0) {
         sections.debt.push({
           type: 'good',
           icon: CheckCircle,
@@ -364,7 +469,21 @@ export default function Dashboard() {
           title: 'Thin Margins',
           text: `${profitMargin.toFixed(1)}% profit margin leaves little room for error.`
         });
-      } else if (profitMargin > 20) {
+      } else if (profitMargin < 10) {
+        sections.profitability.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Moderate Margins',
+          text: `${profitMargin.toFixed(1)}% profit margin - typical for competitive industries.`
+        });
+      } else if (profitMargin < 20) {
+        sections.profitability.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Healthy Margins',
+          text: `${profitMargin.toFixed(1)}% profit margin shows good operational efficiency.`
+        });
+      } else {
         sections.profitability.push({
           type: 'good',
           icon: CheckCircle,
@@ -389,7 +508,21 @@ export default function Dashboard() {
           title: 'Slowing Revenue',
           text: `Revenue declined ${Math.abs(revenueGrowth).toFixed(1)}% - growth concerns.`
         });
-      } else if (revenueGrowth > 25) {
+      } else if (revenueGrowth < 10) {
+        sections.profitability.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Modest Revenue Growth',
+          text: `${revenueGrowth.toFixed(1)}% revenue growth - steady but not exceptional.`
+        });
+      } else if (revenueGrowth < 25) {
+        sections.profitability.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Solid Revenue Growth',
+          text: `${revenueGrowth.toFixed(1)}% revenue growth indicates healthy expansion.`
+        });
+      } else {
         sections.profitability.push({
           type: 'good',
           icon: CheckCircle,
@@ -407,7 +540,28 @@ export default function Dashboard() {
           title: 'Earnings Collapsing',
           text: `Earnings down ${Math.abs(earningsGrowth).toFixed(1)}% - severe profit deterioration.`
         });
-      } else if (earningsGrowth > 30) {
+      } else if (earningsGrowth < 0) {
+        sections.profitability.push({
+          type: 'warning',
+          icon: AlertTriangle,
+          title: 'Earnings Declining',
+          text: `Earnings down ${Math.abs(earningsGrowth).toFixed(1)}% YoY - profit pressures.`
+        });
+      } else if (earningsGrowth < 15) {
+        sections.profitability.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Modest Earnings Growth',
+          text: `${earningsGrowth.toFixed(1)}% earnings growth - steady profitability.`
+        });
+      } else if (earningsGrowth < 30) {
+        sections.profitability.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Solid Earnings Growth',
+          text: `${earningsGrowth.toFixed(1)}% earnings growth - healthy profit expansion.`
+        });
+      } else {
         sections.profitability.push({
           type: 'good',
           icon: CheckCircle,
@@ -436,7 +590,28 @@ export default function Dashboard() {
           title: 'Limited Upside',
           text: `Analyst target ${Math.abs(targetUpside).toFixed(1)}% below current price.`
         });
-      } else if (targetUpside > 30) {
+      } else if (targetUpside < 10) {
+        sections.sentiment.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Modest Upside',
+          text: `Analysts see ${targetUpside.toFixed(1)}% upside - fairly valued by Wall Street.`
+        });
+      } else if (targetUpside < 20) {
+        sections.sentiment.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Positive Outlook',
+          text: `Analysts see ${targetUpside.toFixed(1)}% upside potential to price targets.`
+        });
+      } else if (targetUpside < 30) {
+        sections.sentiment.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Good Upside',
+          text: `Analysts see ${targetUpside.toFixed(1)}% upside - bullish sentiment.`
+        });
+      } else {
         sections.sentiment.push({
           type: 'good',
           icon: CheckCircle,
@@ -448,12 +623,26 @@ export default function Dashboard() {
 
     if (recommendation && recommendation !== 'N/A') {
       const rec = recommendation.toLowerCase();
-      if (rec.includes('strong_buy') || rec === 'buy') {
+      if (rec.includes('strong_buy')) {
+        sections.sentiment.push({
+          type: 'good',
+          icon: CheckCircle,
+          title: 'Strong Buy Rating',
+          text: `Wall Street consensus is "${recommendation.toUpperCase()}" - very bullish outlook.`
+        });
+      } else if (rec === 'buy') {
         sections.sentiment.push({
           type: 'good',
           icon: CheckCircle,
           title: 'Buy Rating',
           text: `Wall Street consensus is "${recommendation.toUpperCase()}" - bullish outlook.`
+        });
+      } else if (rec === 'hold' || rec === 'neutral') {
+        sections.sentiment.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Hold Rating',
+          text: `Analyst consensus is "${recommendation.toUpperCase()}" - wait and see approach.`
         });
       } else if (rec.includes('sell') || rec.includes('underperform')) {
         sections.sentiment.push({
@@ -461,6 +650,13 @@ export default function Dashboard() {
           icon: XCircle,
           title: 'Sell Rating',
           text: `Analyst consensus is "${recommendation.toUpperCase()}" - cautious outlook.`
+        });
+      } else {
+        sections.sentiment.push({
+          type: 'neutral',
+          icon: MinusCircle,
+          title: 'Analyst Rating',
+          text: `Wall Street consensus is "${recommendation.toUpperCase()}".`
         });
       }
     }
@@ -754,6 +950,70 @@ export default function Dashboard() {
                 <span className="text-emerald-400 font-medium">Current: ${data.metrics.price}</span>
                 <span>High: ${data.metrics.week_52_high}</span>
               </div>
+              {/* 52-Week Range Insight */}
+              {(() => {
+                const low = parseFloat(data.metrics.week_52_low);
+                const high = parseFloat(data.metrics.week_52_high);
+                const current = parseFloat(data.metrics.price);
+                const position = ((current - low) / (high - low)) * 100;
+
+                let insightType, InsightIcon, title, text;
+
+                if (position > 90) {
+                  insightType = 'danger';
+                  InsightIcon = XCircle;
+                  title = 'At 52-Week High';
+                  text = `Trading in the top 10% of the yearly range (${position.toFixed(0)}%). Maximum caution - limited upside, high downside risk.`;
+                } else if (position > 80) {
+                  insightType = 'warning';
+                  InsightIcon = AlertTriangle;
+                  title = 'Near 52-Week High';
+                  text = `Trading in the top 20% of the yearly range (${position.toFixed(0)}%). Elevated risk - stock is near its peak.`;
+                } else if (position > 60) {
+                  insightType = 'neutral';
+                  InsightIcon = MinusCircle;
+                  title = 'Upper Range';
+                  text = `Trading in the upper half of the yearly range (${position.toFixed(0)}%). Price is relatively strong.`;
+                } else if (position > 40) {
+                  insightType = 'neutral';
+                  InsightIcon = MinusCircle;
+                  title = 'Mid Range';
+                  text = `Trading near the middle of the yearly range (${position.toFixed(0)}%). Balanced position with room to move either direction.`;
+                } else if (position > 20) {
+                  insightType = 'good';
+                  InsightIcon = CheckCircle;
+                  title = 'Lower Range';
+                  text = `Trading in the lower half of the yearly range (${position.toFixed(0)}%). Potential value opportunity if fundamentals are solid.`;
+                } else {
+                  insightType = 'warning';
+                  InsightIcon = AlertTriangle;
+                  title = 'Near 52-Week Low';
+                  text = `Trading in the bottom 20% of the yearly range (${position.toFixed(0)}%). Could be undervalued or falling knife - investigate further.`;
+                }
+
+                const bgColors = {
+                  danger: 'bg-red-500/10 border-red-500/30',
+                  warning: 'bg-yellow-500/10 border-yellow-500/30',
+                  good: 'bg-emerald-500/10 border-emerald-500/30',
+                  neutral: 'bg-slate-500/10 border-slate-500/30'
+                };
+                const textColors = {
+                  danger: 'text-red-400',
+                  warning: 'text-yellow-400',
+                  good: 'text-emerald-400',
+                  neutral: 'text-slate-400'
+                };
+
+                return (
+                  <div className={`mt-3 p-3 rounded-lg border ${bgColors[insightType]}`}>
+                    <div className={`flex items-center gap-2 font-medium text-sm ${textColors[insightType]}`}>
+                      <InsightIcon className="w-3.5 h-3.5" />
+                      <span>{title}</span>
+                    </div>
+                    <p className="text-slate-400 text-xs mt-1">{text}</p>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* 2. VALUATION Section */}

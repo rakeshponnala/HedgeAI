@@ -21,6 +21,13 @@ Your analysis style:
 - Clear, structured formatting
 - Always cite the specific news sources provided
 
+CRITICAL DATA ACCURACY RULES:
+- ONLY use the EXACT numbers provided in the data above. Do NOT make up, estimate, or hallucinate any figures.
+- When citing a metric, use the precise value given (e.g., if P/E is 45.23, say "45.23" not "around 45" or "approximately 45")
+- If a metric shows "N/A", acknowledge it is unavailable rather than guessing
+- Do NOT invent statistics, percentages, or financial figures that are not explicitly provided
+- Reference news headlines exactly as provided - do not paraphrase or add details not in the headline
+
 You do NOT provide bullish recommendations. Your job is risk identification only."""
 
     USER_PROMPT_TEMPLATE = """
@@ -74,21 +81,23 @@ RECENT NEWS (Cite these sources in your analysis)
 TASK: Generate a Risk Assessment
 ═══════════════════════════════════════════════════════════
 
+IMPORTANT: Only cite the EXACT numbers from the data above. Do not round, estimate, or invent any figures.
+
 Provide your analysis in this EXACT format:
 
 **SUMMARY**
-[2-3 sentences summarizing the current situation and key concern]
+[2-3 sentences summarizing the current situation and key concern. Use exact figures from above.]
 
 **KEY RISKS**
 
 1. **[Risk Title]**
-[Explanation citing specific data or news source]
+[Explanation citing specific data or news source with exact numbers]
 
 2. **[Risk Title]**
-[Explanation citing specific data or news source]
+[Explanation citing specific data or news source with exact numbers]
 
 3. **[Risk Title]**
-[Explanation based on metrics or news]
+[Explanation based on metrics or news with exact numbers]
 
 **VERDICT: [BEARISH or NEUTRAL]**
 [1-2 sentence conclusion explaining the rating]

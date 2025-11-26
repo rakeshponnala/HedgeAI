@@ -113,16 +113,26 @@ class DataService:
             if current_ratio != 'N/A':
                 current_ratio = round(current_ratio, 2)
 
-            # Analyst Target Price
-            target_price = info.get('targetMeanPrice', 'N/A')
+            # Analyst Target Price - log all available target fields
+            target_mean = info.get('targetMeanPrice', 'N/A')
+            target_high = info.get('targetHighPrice', 'N/A')
+            target_low = info.get('targetLowPrice', 'N/A')
+            target_median = info.get('targetMedianPrice', 'N/A')
+            num_analysts = info.get('numberOfAnalystOpinions', 'N/A')
+
+            logger.info(f"[DataService] Analyst Targets - Mean: {target_mean}, Median: {target_median}, High: {target_high}, Low: {target_low}, # Analysts: {num_analysts}")
+
+            target_price = target_mean
             if target_price != 'N/A':
                 target_price = round(target_price, 2)
                 target_upside = round(((target_price - current_price) / current_price) * 100, 1)
             else:
                 target_upside = 'N/A'
+            logger.info(f"[DataService] Final target_price: {target_price}, target_upside: {target_upside}%")
 
             # Recommendation (buy/hold/sell)
             recommendation = info.get('recommendationKey', 'N/A')
+            logger.info(f"[DataService] Recommendation: {recommendation}")
 
             return {
                 "company_name": company_name,
