@@ -1,7 +1,11 @@
 """Service for converting company names to stock tickers."""
 
-from typing import Optional
+from typing import Optional, Tuple
+from difflib import get_close_matches
+import yfinance as yf
+from anthropic import Anthropic
 from app.core.logging_config import get_logger
+from app.core.config import settings
 
 logger = get_logger(__name__)
 
@@ -124,6 +128,9 @@ COMPANY_TO_TICKER = {
     "unitedhealth": "UNH",
     "cvs": "CVS",
     "walgreens": "WBA",
+    "zoetis": "ZTS",
+    "neurocrine": "NBIX",
+    "neurocrine biosciences": "NBIX",
 
     # Energy
     "exxon": "XOM",
@@ -185,6 +192,7 @@ class TickerService:
     def resolve_ticker(input_str: str) -> str:
         """
         Convert company name to ticker symbol if needed.
+        Uses fuzzy matching to auto-correct typos and variations.
 
         Args:
             input_str: Company name or ticker symbol
@@ -199,14 +207,80 @@ class TickerService:
         # Check if it's a known company name or misspelling
         if cleaned in COMPANY_TO_TICKER:
             ticker = COMPANY_TO_TICKER[cleaned]
-            logger.info(f"[TickerService] MATCH FOUND: '{input_str}' -> {ticker}")
+            logger.info(f"[TickerService] EXACT MATCH: '{input_str}' -> {ticker}")
             return ticker
+
+        # Try fuzzy matching for typos (e.g., "zotis" -> "zoetis")
+        matches = get_close_matches(cleaned, COMPANY_TO_TICKER.keys(), n=1, cutoff=0.8)
+        if matches:
+            matched_name = matches[0]
+            ticker = COMPANY_TO_TICKER[matched_name]
+            logger.info(f"[TickerService] FUZZY MATCH: '{input_str}' -> '{matched_name}' -> {ticker}")
+            return ticker
+
+        # Use AI to intelligently find the ticker symbol for ANY company
+        try:
+            if len(input_str) > 2:  # Skip very short inputs
+                logger.info(f"[TickerService] Using AI to resolve ticker for: '{input_str}'")
+                ai_ticker = TickerService._ai_lookup_ticker(input_str)
+                if ai_ticker:
+                    logger.info(f"[TickerService] AI LOOKUP SUCCESS: '{input_str}' -> {ai_ticker}")
+                    return ai_ticker
+        except Exception as e:
+            logger.warning(f"[TickerService] AI lookup failed: {e}")
 
         # Otherwise assume it's already a ticker
         result = input_str.upper().strip()
-        logger.warning(f"[TickerService] NO MATCH in dictionary - passing through as ticker: '{result}'")
-        logger.warning(f"[TickerService] If this fails, consider adding '{cleaned}' to COMPANY_TO_TICKER")
+        logger.warning(f"[TickerService] NO MATCH - passing through as ticker: '{result}'")
+        logger.warning(f"[TickerService] Consider adding '{cleaned}' to COMPANY_TO_TICKER for faster lookup")
         return result
+
+    @staticmethod
+    def _ai_lookup_ticker(company_name: str) -> Optional[str]:
+        """
+        Use Claude AI to intelligently determine the stock ticker for any company.
+
+        Args:
+            company_name: The company name to look up
+
+        Returns:
+            Stock ticker symbol or None if not found
+        """
+        try:
+            client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+
+            prompt = f"""You are a stock market expert. Given a company name or partial name, return ONLY the stock ticker symbol.
+
+Rules:
+- Return ONLY the ticker symbol (e.g., "AAPL", "GOOGL", "MSFT")
+- If it's already a ticker symbol, return it as-is
+- If the company is not publicly traded or you're not sure, return "UNKNOWN"
+- Do not include any explanation, just the ticker symbol
+
+Company name: {company_name}
+
+Ticker symbol:"""
+
+            message = client.messages.create(
+                model="claude-3-5-haiku-20241022",  # Use fast, cheap model
+                max_tokens=10,
+                temperature=0,
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            ticker = message.content[0].text.strip().upper()
+
+            # Validate the response
+            if ticker and ticker != "UNKNOWN" and len(ticker) <= 5:
+                logger.info(f"[TickerService] AI identified ticker: {ticker}")
+                return ticker
+            else:
+                logger.debug(f"[TickerService] AI returned: {ticker}")
+                return None
+
+        except Exception as e:
+            logger.error(f"[TickerService] AI lookup error: {e}")
+            return None
 
     @staticmethod
     def get_company_name(ticker: str) -> Optional[str]:
