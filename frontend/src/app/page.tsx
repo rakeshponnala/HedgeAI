@@ -71,6 +71,27 @@ export default function Dashboard() {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<AnalysisData | null>(null);
   const [error, setError] = useState<string>('');
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  // Load search history from localStorage on mount
+  React.useEffect(() => {
+    const saved = localStorage.getItem('hedgeai_search_history');
+    if (saved) {
+      try {
+        setSearchHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load search history', e);
+      }
+    }
+  }, []);
+
+  // Save search to history
+  const addToHistory = (searchTicker: string) => {
+    const upperTicker = searchTicker.toUpperCase();
+    const newHistory = [upperTicker, ...searchHistory.filter(t => t !== upperTicker)].slice(0, 8);
+    setSearchHistory(newHistory);
+    localStorage.setItem('hedgeai_search_history', JSON.stringify(newHistory));
+  };
 
   const analyzeStock = async () => {
     if (!ticker) return;
@@ -80,12 +101,32 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(`${API_URL}/v1/api/analyze/${ticker}`);
-      if (!response.ok) throw new Error("Failed to fetch data");
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+
+        // Better error handling based on status code
+        if (response.status === 404) {
+          throw new Error(`Ticker "${ticker.toUpperCase()}" not found. Please check the symbol and try again.`);
+        } else if (response.status === 429) {
+          throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+        } else if (response.status === 500) {
+          throw new Error("Server error. The backend may be experiencing issues. Please try again later.");
+        } else {
+          throw new Error(errorData.detail || "Failed to fetch data");
+        }
+      }
 
       const result = await response.json();
       setData(result);
-    } catch (err) {
-      setError("Unable to connect to backend. Please ensure the server is running.");
+      addToHistory(ticker);
+    } catch (err: any) {
+      // Network error
+      if (err.message.includes('fetch')) {
+        setError("Unable to connect to backend. Please ensure the server is running at " + API_URL);
+      } else {
+        setError(err.message || "An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -872,6 +913,55 @@ export default function Dashboard() {
               )}
             </button>
           </div>
+
+          {/* Search History */}
+          {searchHistory.length > 0 && !loading && !data && (
+            <div className="mt-4 flex flex-wrap gap-2 justify-center">
+              <span className="text-slate-500 text-sm">Recent:</span>
+              {searchHistory.map((historyTicker) => (
+                <button
+                  key={historyTicker}
+                  onClick={async () => {
+                    setTicker(historyTicker);
+                    setLoading(true);
+                    setError('');
+                    setData(null);
+
+                    try {
+                      const response = await fetch(`${API_URL}/v1/api/analyze/${historyTicker}`);
+
+                      if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        if (response.status === 404) {
+                          throw new Error(`Ticker "${historyTicker}" not found. Please check the symbol and try again.`);
+                        } else if (response.status === 429) {
+                          throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+                        } else if (response.status === 500) {
+                          throw new Error("Server error. The backend may be experiencing issues. Please try again later.");
+                        } else {
+                          throw new Error(errorData.detail || "Failed to fetch data");
+                        }
+                      }
+
+                      const result = await response.json();
+                      setData(result);
+                    } catch (err: any) {
+                      if (err.message.includes('fetch')) {
+                        setError("Unable to connect to backend. Please ensure the server is running at " + API_URL);
+                      } else {
+                        setError(err.message || "An unexpected error occurred. Please try again.");
+                      }
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  className="px-3 py-1.5 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white rounded-lg text-sm transition-all border border-slate-600/50 hover:border-slate-500"
+                >
+                  {historyTicker}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Error State */}
@@ -880,6 +970,61 @@ export default function Dashboard() {
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl flex items-center gap-3">
               <AlertTriangle className="w-5 h-5 flex-shrink-0" />
               <span>{error}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="space-y-6 animate-pulse">
+            {/* Header Skeleton */}
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-slate-700 rounded-xl"></div>
+                <div className="flex-1">
+                  <div className="h-6 bg-slate-700 rounded w-48 mb-2"></div>
+                  <div className="h-4 bg-slate-700 rounded w-32"></div>
+                </div>
+                <div className="h-10 w-24 bg-slate-700 rounded-lg"></div>
+              </div>
+            </div>
+
+            {/* Price Section Skeleton */}
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+              <div className="h-6 bg-slate-700 rounded w-40 mb-4"></div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="bg-slate-700/50 rounded-xl p-4">
+                    <div className="h-4 bg-slate-600 rounded w-20 mb-2"></div>
+                    <div className="h-6 bg-slate-600 rounded w-16"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Analysis Skeleton */}
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+              <div className="h-6 bg-slate-700 rounded w-32 mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-4 bg-slate-700 rounded w-full"></div>
+                <div className="h-4 bg-slate-700 rounded w-5/6"></div>
+                <div className="h-4 bg-slate-700 rounded w-4/6"></div>
+                <div className="h-4 bg-slate-700 rounded w-full"></div>
+                <div className="h-4 bg-slate-700 rounded w-3/4"></div>
+              </div>
+            </div>
+
+            {/* News Skeleton */}
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6">
+              <div className="h-6 bg-slate-700 rounded w-40 mb-4"></div>
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-slate-700/50 rounded-xl p-4">
+                    <div className="h-5 bg-slate-600 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-slate-600 rounded w-24"></div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
