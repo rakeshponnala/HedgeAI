@@ -6,7 +6,7 @@ pydantic-settings==2.7.1
 python-dotenv==1.0.1
 
 # Data Sources
-yfinance==0.2.51
+yfinance==0.2.66
 ddgs==9.8.0
 
 # AI Integration
